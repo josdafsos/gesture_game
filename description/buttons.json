@@ -1,0 +1,45 @@
+{
+  "static_buttons":
+  [
+    {
+      "id": 0,
+      "x": 10,
+      "y": 50,
+      "shape": "rectangle",
+      "width": 50,
+      "height": 80
+    },
+    {
+      "id": 1,
+      "x": 10,
+      "y": 30,
+      "shape": "circle",
+      "radius": 8
+    },
+    {
+      "id": "test",
+      "x": 10,
+      "y": 30,
+      "shape": "circle",
+      "radius": 12
+    }
+  ],
+  "dynamic_buttons":
+  [
+    {
+      "id": 2,
+      "x": 400,
+      "y": 30,
+      "shape": "circle",
+      "radius": 14
+    },
+    {
+      "id": "example_button",
+      "x": 200,
+      "y": 15,
+      "shape": "rectangle",
+      "width": 50,
+      "height": 80
+    }
+  ]
+}
