@@ -1,0 +1,158 @@
+{
+  "static_buttons":
+  [
+    {
+      "id": 0,
+      "x": 10,
+      "y": 50,
+      "shape": "rectangle",
+      "width": 50,
+      "height": 80
+    },
+    {
+      "id": 1,
+      "x": 10,
+      "y": 30,
+      "shape": "circle",
+      "radius": 8
+    },
+    {
+      "id": "test",
+      "x": 10,
+      "y": 30,
+      "shape": "circle",
+      "radius": 12
+    },
+    {
+      "id": "fist_hand",
+      "x": 80,
+      "y": 80,
+      "shape": "circle",
+      "radius": 35
+    },
+    {
+      "id": "palm_index_f",
+      "x": 80,
+      "y": 80,
+      "color": [100, 200, 50],
+      "line_thickness": 4,
+      "shape": "circle",
+      "radius": 10
+    },
+    {
+      "id": "palm_ring_f",
+      "x": 80,
+      "y": 80,
+      "color": [50, 80, 200],
+      "line_thickness": -1,
+      "shape": "circle",
+      "radius": 15
+    }
+
+  ],
+  "dynamic_buttons":
+  [
+    {
+      "id": 2,
+      "x": 400,
+      "y": 30,
+      "shape": "circle",
+      "radius": 14
+    },
+    {
+      "id": "example_button",
+      "x": 200,
+      "y": 15,
+      "shape": "rectangle",
+      "width": 50,
+      "height": 80
+    },
+    {
+      "id": "test_destroyable_button",
+      "x": 200,
+      "y": 200,
+      "shape": "rectangle",
+      "width": 40,
+      "height": 50,
+      "color": [200, 120, 50],
+      "line_thickness": 3,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"]}
+    },
+    {
+      "id": "red_circle",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 22,
+      "color": [50, 30, 160],
+      "line_thickness": 3,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
+                      "gravity": 1
+      }
+    },
+    {
+      "id": "blue_circle",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 14,
+      "color": [200, 30, 80],
+      "line_thickness": -1,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
+                      "gravity": 2
+      }
+    },
+    {
+      "id": "green_rect",
+      "x": 200,
+      "y": 200,
+      "shape": "rectangle",
+      "width": 30,
+      "height": 40,
+      "color": [60, 180, 90],
+      "line_thickness": 3,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
+                    "gravity": 0
+      }
+    },
+    {
+      "id": "star",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 14,
+      "color": [120, 120, 200],
+      "line_thickness": 5,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_index_f"],
+                      "gravity": -2
+      }
+    },
+    {
+      "id": "kich_head",
+      "x": 300,
+      "y": 300,
+      "shape": "circle",
+      "radius": 40,
+      "color": [20, 120, 50],
+      "line_thickness": 1,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
+                      "gravity": 0,
+                      "texture": "kich_head"
+      }
+    },
+    {
+      "id": "full_description_example",
+      "x": 200,
+      "y": 200,
+      "shape": "rectangle",
+      "width": 40,
+      "height": 50,
+      "color": [20, 120, 50],
+      "line_thickness": 1,
+      "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
+                      "gravity": 2,
+                      "texture": "kich_naked"
+      }
+    }
+  ]
+}
