@@ -2,12 +2,14 @@
   "static_buttons":
   [
     {
-      "id": 0,
-      "x": 10,
-      "y": 50,
+      "id": "start",
+      "x": 80,
+      "y": 115,
       "shape": "rectangle",
-      "width": 50,
-      "height": 80
+      "width": 150,
+      "height": 70,
+      "attributes": {"destroyable_by": ["palm_index_f"],
+                      "texture": "start"}
     },
     {
       "id": 1,
@@ -28,7 +30,8 @@
       "x": 80,
       "y": 80,
       "shape": "circle",
-      "radius": 35
+      "radius": 35,
+      "attributes": {"destroyable_by": ["kich_head"]}
     },
     {
       "id": "palm_index_f",
@@ -141,6 +144,22 @@
       }
     },
     {
+      "id": "kich_naked_random",
+      "x": 300,
+      "y": 300,
+      "shape": "circle",
+      "radius": 80,
+      "color": [20, 120, 50],
+      "line_thickness": 1,
+      "attributes": {"destroyable_by": ["fist_hand"],
+                      "gravity": 0,
+                      "texture": "kich_naked",
+                      "damping": 0.99,
+                      "start_vel_x": 0.5,
+                      "start_vel_y": "random"
+      }
+    },
+    {
       "id": "full_description_example",
       "x": 200,
       "y": 200,
@@ -151,7 +170,10 @@
       "line_thickness": 1,
       "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
                       "gravity": 2,
-                      "texture": "kich_naked"
+                      "texture": "kich_naked",
+                      "damping": 0.99,
+                      "start_vel_x": 0.5,
+                      "start_vel_y": "random"
       }
     }
   ]

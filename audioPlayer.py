@@ -1,5 +1,6 @@
 import simpleaudio as sa
 import json
+import random
 
 class AudioPlayer:
    __instance = None
@@ -16,7 +17,7 @@ class AudioPlayer:
       else:
          AudioPlayer.__instance = self
          self.wave_obj_list = {}
-         self.upload_sounds("sounds.json")
+         self.upload_sounds("description/sounds.json")
    def upload_sounds(self, file):
       with open(file, "r") as read_file:
          data = json.load(read_file)
@@ -31,3 +32,9 @@ class AudioPlayer:
           print("Error, sound file ", soundId, " not found")
        else:
           obj_to_play.play()
+
+   def play_random_from_list(self, sounds_list):
+      if len(sounds_list) == 1:
+         self.playSound(sounds_list[0])
+      else:
+         self.playSound(sounds_list[random.randint(0, len(sounds_list)-1)])

@@ -1,5 +1,7 @@
 {
   "kich_head": "textures/KichHead1.png",
-  "kich_naked": "textures/Kich1.png"
+  "kich_naked": "textures/Kich1.png",
+  "intro": "textures/intro.png",
+  "start": "textures/start.png"
 
 }

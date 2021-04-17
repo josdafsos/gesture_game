@@ -1,4 +1,8 @@
 {
+      "end_driver_stop": "sounds/end_driver_stop.wav",
+      "start_black_ass": "sounds/start_black_ass.wav",
+      "start_mexican": "sounds/start_mexican.wav",
+      "success_nakroem": "sounds/success_nakroem.wav",
       "0": "notes/b5.wav",
       "1": "notes/e3.wav",
       "2": "notes/e4_1.wav",

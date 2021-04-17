@@ -30,8 +30,14 @@ def main():
     tm.Texture.getInstance()
     hand_detector = Hd.handDetector()
     ap.AudioPlayer.getInstance()
-    game = gameLogic.Game()
+
+
+    # TODO check if camera is enabled
     cap = cv2.VideoCapture(0)
+    success, img = cap.read()
+    h, w, c = img.shape
+    game = gameLogic.Game(w, h)
+
     # screen cannot be extended for values higher than camera provides
     # cap.set(3, WIN_WIDTH)
     # cap.set(4, WIN_HEIGHT)
@@ -57,7 +63,7 @@ def main():
         game.set_hands(hand_buttons)
 
         if logic_timer_1 - logic_timer_2 > LOGIC_DELAY:
-            game.game_logic(img)
+            img = game.game_logic(img)
             logic_timer_2 = time.time()
         else:
             #time.sleep(0.001)

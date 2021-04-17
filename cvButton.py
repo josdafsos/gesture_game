@@ -1,6 +1,7 @@
 import cv2
 import math
 import textureManager as tm
+import random
 
 class Button:
     def __init__(self, x, y, button_type, id, shape, color, line_thickness,
@@ -47,6 +48,7 @@ class Button:
             self.on_collision_action(button)
         if self.is_triggered:
             self.check_destroy_by_button(button)
+            button.check_destroy_by_button(self)
         return self.is_triggered
 
     def circleCircleCollisionDetect(self, button):
@@ -79,9 +81,9 @@ class Button:
 
     def check_destroy_by_button(self, button):
 
-        destrayable_by = self.attributes.get("destroyable_by")
-        if not (destrayable_by is None):
-            for d in destrayable_by:
+        destroyable_by = self.attributes.get("destroyable_by")
+        if not (destroyable_by is None):
+            for d in destroyable_by:
                 if d == button.id:
                     self.is_destroyed = True
 
@@ -89,9 +91,8 @@ class Button:
         return not (self.attributes.get("destroyable_by") is None)
 
     def merge_images(self, img, texture_id):
-
-        texture = tm.Texture.getInstance().get_texture(texture_id)
-        texture = cv2.resize(texture, (self.width, self.height))
+        texture = tm.Texture.getInstance()\
+            .get_resized_texture(texture_id, self.width, self.height)
         img_height = img.shape[0]
         img_width = img.shape[1]
         texture_height = texture.shape[0]
@@ -121,6 +122,23 @@ class DynamicButton(Button):
         self.y_acceleration = 1
         self.x_speed = 0
         self.y_speed = 0
+        self.get_initial_velocity()
+
+    def get_initial_velocity(self):
+        if not (self.attributes.get("start_vel_x") is None):
+            x_vel = self.attributes.get("start_vel_x")
+            if str(x_vel) == "random":
+                self.x_speed = random.randint(-int(math.sqrt(self.max_speed)),
+                                              int(math.sqrt(self.max_speed)))
+            else:
+                self.x_speed = int(x_vel * int(math.sqrt(self.max_speed)))
+        if not (self.attributes.get("start_vel_y") is None):
+            y_vel = self.attributes.get("start_vel_y")
+            if str(y_vel) == "random":
+                self.y_speed = random.randint(-int(math.sqrt(self.max_speed)),
+                                              int(math.sqrt(self.max_speed)))
+            else:
+                self.y_speed = int(y_vel * int(math.sqrt(self.max_speed)))
 
     def on_collision_action(self, button):
         delta = self.width + button.width\
@@ -134,15 +152,16 @@ class DynamicButton(Button):
             graviti_acc = self.attributes.get("gravity")
         return graviti_acc
 
+    def get_damping(self):
+        damping = 0.9
+        if not (self.attributes.get("damping") is None):
+            damping = self.attributes.get("damping")
+        return damping
 
     def dynamic_action(self, top_y, right_x):
         #self.y_speed += self.y_acceleration
         self.y_speed += self.get_gravitic_acc()
         if self.x_speed ** 2 + self.y_speed ** 2 > self.max_speed:
-            #dividor_y = self.y_speed * math.fabs(self.y_speed) // (self.x_speed**2 + self.y_speed**2)
-            #dividor_x = self.x_speed * math.fabs(self.x_speed) // (self.x_speed**2 + self.y_speed**2)
-            #self.y_speed = int(dividor_y * self.max_speed * 0.9)
-            #self.x_speed = int(dividor_x * self.max_speed * 0.9)
             self.y_speed = int(0.8*self.y_speed)
             self.x_speed = int(0.8 * self.x_speed)
 
@@ -153,9 +172,9 @@ class DynamicButton(Button):
         if self.x-self.width//2 < 0 or self.x+self.width//2 > right_x:
             self.x_speed *= -1
             self.x += self.x_speed
-            self.x_speed = int(self.x_speed*0.9)
+            self.x_speed = int(self.x_speed*self.get_damping())
         if self.y-self.height//2 < 0 or self.y+self.height//2 > top_y:
             self.y_speed *= -1
             self.y += self.y_speed
-            self.y_speed = int(self.y_speed*0.9)
+            self.y_speed = int(self.y_speed*self.get_damping())
 

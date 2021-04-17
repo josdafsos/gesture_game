@@ -33,3 +33,10 @@ class Texture:
        else:
           return texture
 
+   def get_resized_texture(self, texture_id, width, height):
+      texture = self.get_texture(texture_id)
+      texture = cv2.resize(texture, (width, height))
+      return texture
+
+
+
