@@ -2,6 +2,7 @@ import cvButton as cb
 import json
 from copy import deepcopy
 import random
+import textureManager as tm
 
 class ButtonHandler:
     __instance = None
@@ -35,11 +36,6 @@ class ButtonHandler:
             button_id = str(data[b_type][i]["id"])
             shape = data[b_type][i]["shape"]
 
-            attributes = {"empty": "empty"}
-            uploaded_attributes = data[b_type][i].get("attributes")
-            if not (uploaded_attributes is None):
-                attributes = uploaded_attributes
-
             color = (120, 120, 120)
             uploaded_color = data[b_type][i].get("color")
             if not (uploaded_color is None):
@@ -56,6 +52,18 @@ class ButtonHandler:
             else:
                 width = data[b_type][i]["radius"]
                 height = width
+
+            attributes = {"empty": "empty"}
+            uploaded_attributes = data[b_type][i].get("attributes")
+            if not (uploaded_attributes is None):
+                attributes = uploaded_attributes
+                texture_id = attributes.get("texture")
+                if not (texture_id is None):
+                    texture = tm.Texture.getInstance() \
+                        .get_resized_texture(texture_id, width, height)
+                    attributes["texture"] = texture
+
+
             if b_type == "static_buttons":
                 button_type = "static"
                 self.loaded_buttons[button_id] = cb.Button(x, y, button_type,
@@ -85,11 +93,38 @@ class ButtonHandler:
         return button_list
 
     def spawn_random_from_list_random_place(self, button_id_list, amount, spawn_area):
+        assert type(button_id_list) is list, "id's of spawning buttons must be in list"
         button_list = []
         for i in range(amount):
             button_list.append(self.spawn_in_random_place(
                 button_id_list[random.randint(0, len(button_id_list)-1)], spawn_area))
         return button_list
+
+    def spawn_behind_scene(self, button_id, amount, direction, img_size):
+        button_list = []
+        width, height = img_size
+        for i in range(amount):
+            new_button = self.get_new_button(button_id)
+            chosen_direction = direction
+            if chosen_direction == "random":
+                chosen_direction = random.choice(("up", "down", "left", "right"))
+            if chosen_direction == "up":
+                new_button.y = -int(0.2*height)
+                new_button.x = random.randint(0, width)
+            if chosen_direction == "down":
+                new_button.y = int(1.2*height)
+                new_button.x = random.randint(0, width)
+            if chosen_direction == "left":
+                new_button.y = -int(0.2 * width)
+                new_button.x = random.randint(0, height)
+            if chosen_direction == "right":
+                new_button.y = int(1.2 * width)
+                new_button.x = random.randint(0, height)
+            button_list.append(new_button)
+
+        return button_list
+
+
 
 
 

@@ -65,8 +65,8 @@ class Button:
         return cv2.circle(img,(self.x,self.y),5,(255,0,0),-1)
 
     def dynamic_action(self, top_y, right_x):
-        # action that happens every cycle
-        pass
+        if not (self.attributes is None):
+            self.check_life_time()
 
     def set_coords(self, new_x, new_y):
         self.x = new_x
@@ -91,8 +91,9 @@ class Button:
         return not (self.attributes.get("destroyable_by") is None)
 
     def merge_images(self, img, texture_id):
-        texture = tm.Texture.getInstance()\
-            .get_resized_texture(texture_id, self.width, self.height)
+        #texture = tm.Texture.getInstance()\
+        #    .get_resized_texture(texture_id, self.width, self.height)
+        texture = self.attributes.get("texture")
         img_height = img.shape[0]
         img_width = img.shape[1]
         texture_height = texture.shape[0]
@@ -111,6 +112,16 @@ class Button:
                         img[min_y+j, min_x+i, :] = texture[j, i, :]
         return img
 
+    def check_life_time(self):
+        if not (self.attributes.get("life_time") is None):
+            life_time = self.attributes.get("life_time")
+            if type(life_time) is list:
+                min_time, max_time = self.attributes.get("life_time")
+                self.attributes["life_time"] = random.randint(min_time, max_time)
+            else:
+                self.attributes["life_time"] = life_time - 1
+                if life_time <= 0:
+                    self.is_destroyed = True
 
 class DynamicButton(Button):
 
@@ -141,10 +152,11 @@ class DynamicButton(Button):
                 self.y_speed = int(y_vel * int(math.sqrt(self.max_speed)))
 
     def on_collision_action(self, button):
-        delta = self.width + button.width\
-                - math.hypot(self.x-button.x, self.y-button.y)
-        self.x_speed = int(delta * (self.y - button.y)*0.8 - self.x_speed * 0.2)
-        self.y_speed = int(delta * (self.x - button.x)*0.8 - self.y_speed * 0.2)
+        if self.attributes.get("collision_bounce") is None:
+            delta = self.width + button.width\
+                    - math.hypot(self.x-button.x, self.y-button.y)
+            self.x_speed = int(delta * (self.y - button.y)*0.8 - self.x_speed * 0.2)
+            self.y_speed = int(delta * (self.x - button.x)*0.8 - self.y_speed * 0.2)
 
     def get_gravitic_acc(self):
         graviti_acc = 0
@@ -169,12 +181,14 @@ class DynamicButton(Button):
         self.y += self.y_speed
 
         # window border detection
-        if self.x-self.width//2 < 0 or self.x+self.width//2 > right_x:
-            self.x_speed *= -1
-            self.x += self.x_speed
-            self.x_speed = int(self.x_speed*self.get_damping())
-        if self.y-self.height//2 < 0 or self.y+self.height//2 > top_y:
-            self.y_speed *= -1
-            self.y += self.y_speed
-            self.y_speed = int(self.y_speed*self.get_damping())
+        if self.attributes.get("no_border") is None:
+            if self.x-self.width//2 < 0 or self.x+self.width//2 > right_x:
+                self.x_speed *= -1
+                self.x += self.x_speed
+                self.x_speed = int(self.x_speed*self.get_damping())
+            if self.y-self.height//2 < 0 or self.y+self.height//2 > top_y:
+                self.y_speed *= -1
+                self.y += self.y_speed
+                self.y_speed = int(self.y_speed*self.get_damping())
 
+        self.check_life_time()

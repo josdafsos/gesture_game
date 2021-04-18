@@ -12,6 +12,35 @@
                       "texture": "start"}
     },
     {
+      "id": "start_for_sure",
+      "x": 200,
+      "y": 400,
+      "shape": "rectangle",
+      "width": 300,
+      "height": 50,
+      "attributes": {"destroyable_by": ["palm_index_f"],
+                      "texture": "start_for_sure"}
+    },
+    {
+      "id": "touch_here",
+      "x": 300,
+      "y": 300,
+      "shape": "rectangle",
+      "width": 250,
+      "height": 70,
+      "attributes": {"destroyable_by": ["palm_index_f"],
+                      "texture": "touch_here"}
+    },
+    {
+      "id": "basket",
+      "x": 300,
+      "y": 140,
+      "shape": "rectangle",
+      "width": 90,
+      "height": 120,
+      "attributes": {"texture": "basket"}
+    },
+    {
       "id": 1,
       "x": 10,
       "y": 30,
@@ -31,7 +60,7 @@
       "y": 80,
       "shape": "circle",
       "radius": 35,
-      "attributes": {"destroyable_by": ["kich_head"]}
+      "attributes": {"destroyable_by": ["kich_head", "misha_chaser", "red_ball_chaser"]}
     },
     {
       "id": "palm_index_f",
@@ -49,7 +78,8 @@
       "color": [50, 80, 200],
       "line_thickness": -1,
       "shape": "circle",
-      "radius": 15
+      "radius": 15,
+      "attributes": {"destroyable_by": ["kich_head", "misha_chaser", "red_ball_chaser"]}
     }
 
   ],
@@ -91,6 +121,43 @@
       "line_thickness": 3,
       "attributes": {"destroyable_by": ["fist_hand", "palm_ring_f"],
                       "gravity": 1
+      }
+    },
+    {
+      "id": "red_basket_ball",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 22,
+      "color": [50, 30, 160],
+      "line_thickness": -1,
+      "attributes": {"destroyable_by": ["basket"],
+                      "gravity": 1
+      }
+    },
+    {
+      "id": "red_basket_ball_inversed",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 22,
+      "color": [50, 30, 160],
+      "line_thickness": -1,
+      "attributes": {"destroyable_by": ["basket"],
+                      "gravity": -1
+      }
+    },
+    {
+      "id": "blue_basket_ball",
+      "x": 200,
+      "y": 200,
+      "shape": "circle",
+      "radius": 14,
+      "color": [200, 30, 80],
+      "line_thickness": 3,
+      "attributes": {"destroyable_by": ["fist_hand"],
+                      "damping": 0.99,
+                      "gravity": 2
       }
     },
     {
@@ -160,6 +227,34 @@
       }
     },
     {
+      "id": "misha_chaser",
+      "x": 300,
+      "y": 300,
+      "shape": "rectangle",
+      "width": 70,
+      "height": 80,
+      "color": [20, 120, 50],
+      "line_thickness": 1,
+      "attributes": { "gravity": 0,
+                      "texture": "misha_head",
+                      "collision_bounce": false,
+                      "life_time": [50, 150]
+      }
+    },
+    {
+      "id": "red_ball_chaser",
+      "x": 300,
+      "y": 300,
+      "shape": "circle",
+      "radius": 22,
+      "color": [120, 150, 220],
+      "line_thickness": 3,
+      "attributes": { "gravity": 0,
+                      "collision_bounce": false,
+                      "life_time": [50, 150]
+      }
+    },
+    {
       "id": "full_description_example",
       "x": 200,
       "y": 200,
@@ -173,7 +268,10 @@
                       "texture": "kich_naked",
                       "damping": 0.99,
                       "start_vel_x": 0.5,
-                      "start_vel_y": "random"
+                      "start_vel_y": "random",
+                      "no_border": true,
+                      "collision_bounce": false,
+                      "life_time": [100, 200]
       }
     }
   ]

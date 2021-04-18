@@ -1,7 +1,12 @@
 {
-  "kich_head": "textures/KichHead1.png",
-  "kich_naked": "textures/Kich1.png",
+  "kich_head": "textures/Kich_head.png",
+  "kich_naked": "textures/Kich_seat.png",
   "intro": "textures/intro.png",
-  "start": "textures/start.png"
+  "start": "textures/start.png",
+  "start_for_sure": "textures/start_for_sure.png",
+  "game_over": "textures/game_over.jpg",
+  "touch_here": "textures/touch_here.png",
+  "misha_head": "textures/misha_head.png",
+  "basket": "textures/Basket.jpg"
 
 }

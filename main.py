@@ -20,7 +20,6 @@ hand_buttons = []
 scene_act = 0
 
 
-
 def main():
     # TODO two finger connect to cause wave
     # TODO scene class with health bar and other staff, check if hands on the screen
@@ -30,7 +29,6 @@ def main():
     tm.Texture.getInstance()
     hand_detector = Hd.handDetector()
     ap.AudioPlayer.getInstance()
-
 
     # TODO check if camera is enabled
     cap = cv2.VideoCapture(0)
@@ -48,9 +46,8 @@ def main():
     logic_timer_1 = time.time()
     logic_timer_2 = 0
 
-
-
     while True:
+
         success, img = cap.read()
         img = cv2.flip(img, 1)
         hands = hand_detector.findHands(img)
