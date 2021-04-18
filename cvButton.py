@@ -123,6 +123,12 @@ class Button:
                 if life_time <= 0:
                     self.is_destroyed = True
 
+    def check_spawn_on_death(self):
+        spawn_buttons_id = []
+        if not (self.attributes.get("spawn_on_death") is None):
+            spawn_buttons_id = self.attributes.get("spawn_on_death")
+        return spawn_buttons_id
+
 class DynamicButton(Button):
 
     def __init__(self, x, y, button_type, id, shape, color, line_thickness,

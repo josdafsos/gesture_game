@@ -238,7 +238,7 @@
       "attributes": { "gravity": 0,
                       "texture": "misha_head",
                       "collision_bounce": false,
-                      "life_time": [50, 150]
+                      "life_time": [100, 170]
       }
     },
     {
@@ -251,7 +251,22 @@
       "line_thickness": 3,
       "attributes": { "gravity": 0,
                       "collision_bounce": false,
-                      "life_time": [50, 150]
+                      "life_time": [90, 170]
+      }
+    },
+    {
+      "id": "death_spawner",
+      "x": 300,
+      "y": 300,
+      "shape": "circle",
+      "radius": 22,
+      "color": [120, 150, 220],
+      "line_thickness": 3,
+      "attributes": { "gravity": 0,
+                      "collision_bounce": false,
+                      "life_time": [90, 170],
+                      "spawn_on_death": ["green_rect","star"],
+                      "destroyable_by": ["fist_hand", "palm_ring_f"]
       }
     },
     {
@@ -271,7 +286,8 @@
                       "start_vel_y": "random",
                       "no_border": true,
                       "collision_bounce": false,
-                      "life_time": [100, 200]
+                      "life_time": [100, 200],
+                      "spawn_on_death": ["kich_head","star"]
       }
     }
   ]

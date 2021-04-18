@@ -5,6 +5,7 @@ import utils
 import textureManager as tm
 import cv2
 import time
+import random
 
 class Game:
     # TODO scene with chasing enemies, one enemies attract to palm and repel from fist and with others vise versa
@@ -30,6 +31,8 @@ class Game:
         self.timer_1 = 0
         self.timer_2 = 0
 
+        self.difficulty = 1
+
     def set_hands(self, hand_buttons):
         self.hand_buttons = hand_buttons
 
@@ -44,9 +47,6 @@ class Game:
             for s in self.special_buttons:
                 if button.collisionWithButtonDetect(s):
                     pass
-            # for button2 in self.buttons:
-            #     if button2 != button:
-            #         button.collisionWithButtonDetect(button2)
             button.dynamic_action(h, w)
         if self.game_status == "game":
             img = self.scene_list[self.current_scene](img)
@@ -57,6 +57,14 @@ class Game:
 
         for button in self.buttons:
             if button.is_destroyed:
+                for to_spawn in button.check_spawn_on_death():
+                    new_button = bh.ButtonHandler.getInstance()\
+                        .get_new_button(to_spawn)
+                    new_button.x = button.x + random.randint(-button.width//2,
+                                                             button.width//2)
+                    new_button.y = button.y + random.randint(-button.height//2,
+                                                             button.height//2)
+                    self.buttons.append(new_button)
                 self.buttons.remove(button)
         for hand in self.hand_buttons:
             if hand.is_destroyed:
@@ -108,7 +116,10 @@ class Game:
                           int(self.win_width * 0.9), int(self.win_height * 0.3))
             bottom_spawn_area = (int(self.win_width * 0.1), int(self.win_height * 0.7),
                           int(self.win_width * 0.9), int(self.win_height * 0.9))
-            balls_to_spawn = 1 # by default = 5
+            if self.difficulty == 0:
+                balls_to_spawn = 1 # by default = 5
+            else:
+                balls_to_spawn = 5
             self.buttons.extend(bh.ButtonHandler.getInstance().
                                 spawn_random_from_list_random_place(["blue_basket_ball"],
                                                                     balls_to_spawn + 1,
@@ -125,7 +136,7 @@ class Game:
             if len(self.buttons) <= 0:
                 self.next_scene()
 
-        text = ["let's start from something simple", "Destroy bule balls using fists",
+        text = ["let's start from something simple", "Destroy blue balls using fists",
                 "put other balls into the basket"]
         self.draw_corner_text(img, text)
 
@@ -154,7 +165,10 @@ class Game:
                                                                    required_buttons, spawn_area))
             for b in self.buttons:
                 if b.id == "kich_naked_random" and b.is_destroyed: self.kill_counter += 1
-            units_to_kill = 5
+            if self.difficulty == 0:
+                units_to_kill = 5
+            else:
+                units_to_kill = 19
             if self.kill_counter >= units_to_kill:
                 self.next_scene()
                 ap.AudioPlayer.getInstance().play_random_from_list(["success_nakroem"])
@@ -182,8 +196,9 @@ class Game:
                 self.scene_act += 1
                 self.timer_2 = time.time()
             text_list = ["Keep at least one hand on the screen",
-                         "Or you will loose HP!",
-                         "Try to survive for as long as possible"]
+                         "Or you will lose HP!",
+                         "Try to survive for as long as possible",
+                         "Don't touch anything, except for this button"]
             self.draw_corner_text(img, text_list)
         elif self.scene_act == 2:
             spawn_area = (int(self.win_width * 0.1), int(self.win_height * 0.1),
@@ -197,15 +212,15 @@ class Game:
             #                                         "random", (self.win_width, self.win_height)))
             self.buttons.extend(bh.ButtonHandler.getInstance().
                                 spawn_random_from_list_random_place(["misha_chaser"],
-                                                                    5, spawn_area))
+                                                                    4, spawn_area))
             self.buttons.extend(bh.ButtonHandler.getInstance().
                                 spawn_random_from_list_random_place(["red_ball_chaser"],
-                                                                    5, spawn_area))
+                                                                    4, spawn_area))
             self.scene_act += 1
         elif self.scene_act == 3:
             if len(self.hand_buttons) == 0:
                 self.timer_1 = time.time()
-                if self.timer_1 - self.timer_2 > 0.4:
+                if self.timer_1 - self.timer_2 > 0.5:
                     self.timer_2 = time.time()
                     self.hp -= 1
             if len(self.buttons) == 0:
