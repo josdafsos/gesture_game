@@ -7,6 +7,13 @@
   "game_over": "textures/game_over.jpg",
   "touch_here": "textures/touch_here.png",
   "misha_head": "textures/misha_head.png",
-  "basket": "textures/Basket.jpg"
-
+  "basket": "textures/Basket.jpg",
+  "panna_head": "textures/Panna_head.png",
+  "grisha_body": "textures/Grisha_Body.png",
+  "grisha_head": "textures/Trap_grisha.png",
+  "panna_body": "textures/Panna_body.png",
+  "grisha_3": "textures/Grisha_Slut.png",
+  "panna_attracted": "textures/Panna_FunnyHead.png",
+  "lose_boss": "textures/Kich_LoseBoss.png",
+  "victory": "textures/victory.jpg"
 }

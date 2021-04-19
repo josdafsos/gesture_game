@@ -85,7 +85,16 @@ class Button:
         if not (destroyable_by is None):
             for d in destroyable_by:
                 if d == button.id:
-                    self.is_destroyed = True
+                    hp = self.attributes.get("health")
+                    if hp is None:
+                        self.is_destroyed = True
+                    else:
+                        if hp <= 0:
+                            self.is_destroyed = True
+                        else:
+                            self.attributes["health"] = hp - 1
+
+
 
     def is_destroyable(self):
         return not (self.attributes.get("destroyable_by") is None)
@@ -136,6 +145,8 @@ class DynamicButton(Button):
         super().__init__(x, y, button_type, id, shape, color, line_thickness,
                          attributes, width, height)
         self.max_speed = 300
+        if not (self.attributes.get("max_speed") is None):
+            self.max_speed = self.attributes.get("max_speed")
         self.y_acceleration = 1
         self.x_speed = 0
         self.y_speed = 0
@@ -160,7 +171,7 @@ class DynamicButton(Button):
     def on_collision_action(self, button):
         if self.attributes.get("collision_bounce") is None:
             delta = self.width + button.width\
-                    - math.hypot(self.x-button.x, self.y-button.y)
+                          - math.hypot(self.x-button.x, self.y-button.y)
             self.x_speed = int(delta * (self.y - button.y)*0.8 - self.x_speed * 0.2)
             self.y_speed = int(delta * (self.x - button.x)*0.8 - self.y_speed * 0.2)
 

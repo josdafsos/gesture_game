@@ -22,7 +22,6 @@ scene_act = 0
 
 def main():
     # TODO two finger connect to cause wave
-    # TODO scene class with health bar and other staff, check if hands on the screen
     # TODO lambda for upload attributes
 
     bh.ButtonHandler.getInstance()
@@ -34,6 +33,7 @@ def main():
     cap = cv2.VideoCapture(0)
     success, img = cap.read()
     h, w, c = img.shape
+    bh.ButtonHandler.getInstance().set_screen_size(w, h)
     game = gameLogic.Game(w, h)
 
     # screen cannot be extended for values higher than camera provides

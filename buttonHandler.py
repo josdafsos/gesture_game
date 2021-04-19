@@ -20,6 +20,8 @@ class ButtonHandler:
             raise Exception("This class is a singleton!")
         else:
             ButtonHandler.__instance = self
+            self.win_width = 500
+            self.win_height = 500
             self.loaded_buttons = {}
             self.upload_buttons("description/buttons.json")
 
@@ -29,10 +31,13 @@ class ButtonHandler:
         self.parse_button_data(data, "static_buttons")
         self.parse_button_data(data, "dynamic_buttons")
 
+    def set_screen_size(self, width, height):
+        self.win_width = width
+        self.win_height = height
+
     def parse_button_data(self, data, b_type):
         for i in range(len(data[b_type])):
-            x = data[b_type][i]["x"]
-            y = data[b_type][i]["y"]
+
             button_id = str(data[b_type][i]["id"])
             shape = data[b_type][i]["shape"]
 
@@ -52,6 +57,15 @@ class ButtonHandler:
             else:
                 width = data[b_type][i]["radius"]
                 height = width
+
+            x = data[b_type][i]["x"]
+            if type(x) is str:
+                if x == "right":
+                    x = self.win_width - width // 2
+            y = data[b_type][i]["y"]
+            if type(y) is str:
+                if y == "bottom":
+                    y = self.win_height - height // 2
 
             attributes = {"empty": "empty"}
             uploaded_attributes = data[b_type][i].get("attributes")
@@ -115,11 +129,11 @@ class ButtonHandler:
                 new_button.y = int(1.2*height)
                 new_button.x = random.randint(0, width)
             if chosen_direction == "left":
-                new_button.y = -int(0.2 * width)
-                new_button.x = random.randint(0, height)
+                new_button.x = -int(0.2 * width)
+                new_button.y = random.randint(0, height)
             if chosen_direction == "right":
-                new_button.y = int(1.2 * width)
-                new_button.x = random.randint(0, height)
+                new_button.x = int(1.2 * width)
+                new_button.y = random.randint(0, height)
             button_list.append(new_button)
 
         return button_list

@@ -6,22 +6,21 @@ import textureManager as tm
 import cv2
 import time
 import random
+from copy import deepcopy
 
 class Game:
-    # TODO scene with chasing enemies, one enemies attract to palm and repel from fist and with others vise versa
 
     def __init__(self, win_width, win_height):
-
-        # TODO boss erotic Grisha, attracting pannas. Botles spawning around that may damage Grisha
         # TODO harder level with basketball and damaging objects
         self.buttons = []
         self.hand_buttons = []
         self.special_buttons = []
         self.scene_act = 0
-        self.scene_list = [self.scene_tutorial, self.scene_1, self.scene_2]
-        self.descritpion_list = [self.description_1, self.description_2, self.description_3,
-                                 self.description_4]
-        self.current_scene = -1
+        self.scene_list = [self.scene_tutorial, self.scene_1,
+                           self.scene_2, self.boss_fight]
+        self.descritpion_list = [self.description_1, self.description_2,
+                                 self.description_3, self.description_4]
+        self.current_scene = -1 # by default -1, 2 - boss
         self.win_width = win_width
         self.win_height = win_height
         self.kill_counter = 0
@@ -54,6 +53,8 @@ class Game:
             img = self.loose_scene(img)
         elif self.game_status == "menu":
             img = self.menu_scene(img)
+        elif self.game_status == "victory":
+            img = self.victory_screen(img)
 
         for button in self.buttons:
             if button.is_destroyed:
@@ -70,6 +71,7 @@ class Game:
             if hand.is_destroyed:
                 self.hp -= 1
         for s in self.special_buttons:
+            s.dynamic_action(h, w)
             if s.is_destroyed:
                 self.special_buttons.remove(s)
         return img
@@ -173,13 +175,13 @@ class Game:
                 self.next_scene()
                 ap.AudioPlayer.getInstance().play_random_from_list(["success_nakroem"])
                 return img
-            hint = "Kill %s naked Kich'es using fists" % (units_to_kill - self.kill_counter)
+            hint = "Collect %s naked Kich'es using fists" % (units_to_kill - self.kill_counter)
             img = cv2.putText(img, hint, (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
                               0.7, (255, 255, 255), 2)
             hint = "Avoid fisting Kich heads"
             img = cv2.putText(img, hint, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,
                               0.7, (255, 255, 255), 2)
-            hint = "Destroy Kich heads with palms"
+            hint = "Clear Kich heads with palms"
             img = cv2.putText(img, hint, (10, 80), cv2.FONT_HERSHEY_SIMPLEX,
                               0.7, (255, 255, 255), 2)
         return img
@@ -212,10 +214,10 @@ class Game:
             #                                         "random", (self.win_width, self.win_height)))
             self.buttons.extend(bh.ButtonHandler.getInstance().
                                 spawn_random_from_list_random_place(["misha_chaser"],
-                                                                    4, spawn_area))
+                                                                    3, spawn_area))
             self.buttons.extend(bh.ButtonHandler.getInstance().
                                 spawn_random_from_list_random_place(["red_ball_chaser"],
-                                                                    4, spawn_area))
+                                                                    3, spawn_area))
             self.scene_act += 1
         elif self.scene_act == 3:
             if len(self.hand_buttons) == 0:
@@ -291,18 +293,16 @@ class Game:
 
         return img
 
-    def scene_3(self, img):
-
-        return img
-
     def defeat(self):
         self.restart_scene_parameters()
         self.game_status = "loose"
-        ap.AudioPlayer.getInstance().play_random_from_list(["end_driver_stop"])
+        ap.AudioPlayer.getInstance()\
+            .play_random_from_list(["end_driver_stop", "end_Kich_VseStop",
+                                    "end_panna_poslashe", "end_panna_ti"])
 
     def menu_scene(self, img):
         img = tm.Texture.getInstance().get_resized_texture("intro", self.win_width,
-                                                           self.win_height)
+                                                            self.win_height)
         if self.scene_act == 0:
             self.buttons.append(bh.ButtonHandler.getInstance()
                                 .get_new_button("start"))
@@ -318,7 +318,8 @@ class Game:
                 #self.restart_scene_parameters()
                 #self.game_status = "game"
                 ap.AudioPlayer.getInstance()\
-                    .play_random_from_list(["start_black_ass", "start_mexican"])
+                    .play_random_from_list(["start_black_ass", "start_mexican",
+                                            "start_panna_budes"])
                 return img
 
         img = self.descritpion_list[self.current_scene+1](img)
@@ -326,22 +327,28 @@ class Game:
         return img
 
     def loose_scene(self, img):
-        img = tm.Texture.getInstance().get_resized_texture("game_over", self.win_width,
-                                                           self.win_height)
+        if self.current_scene < 2:
+            img = tm.Texture.getInstance().get_resized_texture("game_over", self.win_width,
+                                                               self.win_height)
+
+            cv2.putText(img, 'You lost', (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7, (255, 255, 255), 2)
+            cv2.putText(img, 'Next time be more careful with KICH', (10, 45), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7, (255, 255, 255), 2)
+            cv2.putText(img, 'Press "start" to try once again', (10, 70), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7, (255, 255, 255), 2)
+        else:
+            img = tm.Texture.getInstance().get_resized_texture("lose_boss", self.win_width,
+                                                               self.win_height)
+
         if self.scene_act == 0:
             #self.buttons.append(bh.ButtonHandler.getInstance().get_new_button("start"))
             self.buttons.append(bh.ButtonHandler.getInstance().get_new_button("start"))
             self.scene_act += 1
-
-        if len(self.buttons) == 0:
-            self.restart_scene_parameters()
-            self.game_status = "game"
-        cv2.putText(img, 'You lost', (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.7, (255, 255, 255), 2)
-        cv2.putText(img, 'Next time be more careful with KICH', (10, 45), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.7, (255, 255, 255), 2)
-        cv2.putText(img, 'Press "start" to try once again', (10, 70), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.7, (255, 255, 255), 2)
+        if self.scene_act == 1:
+            if len(self.buttons) == 0:
+                self.restart_scene_parameters()
+                self.game_status = "game"
 
         return img
     def description_1(self, img):
@@ -374,8 +381,9 @@ class Game:
                     1, (20, 20, 255), 3)
         return img
     def description_4(self, img):
-        text = ["Still a lot of work to do",
-                "Don't give up, you can do it!"]
+        text = ["Wait! do you hear that?",
+                "Evil Grisha is coming",
+                "Hurry up we have to save KICH"]
         self.draw_corner_text(img, text)
         hint = "Round %s" % (self.current_scene + 2)
         cv2.putText(img, hint, (int(self.win_width*0.45), int(self.win_height*0.3)),
@@ -386,3 +394,268 @@ class Game:
         for i in range(0, len(text_list)):
             cv2.putText(img, text_list[i], (10, 20 + 25*i), cv2.FONT_HERSHEY_SIMPLEX,
                         0.7, (255, 255, 255), 2)
+
+    def boss_fight(self, img):
+        # stage one throw balls into grisha, panna heads fly
+        # stage two protect kich, grisha is moving towards him
+        # stage three battle with grisha, his is on the bottom throwing something into
+        # player, player must destroy panna - guards, spawning in front
+
+        #### stage 1
+
+        if self.scene_act == 0:
+            self.boss_1_act_1(img)
+            self.scene_act += 1
+        elif self.scene_act == 1:
+            if len(self.buttons) == 0:
+                ap.AudioPlayer.getInstance().play_random_from_list(["grisha_1"])
+                self.scene_act += 1
+            text = ["Grisha with his faithful", "guards wants to attack KICH",
+                    "Stop him at any cost!",
+                    "Shoot from you hands"]
+            self.draw_corner_text(img, text)
+        elif self.scene_act == 2:
+            if len(self.special_buttons) == 0:
+                self.scene_act += 1
+                ap.AudioPlayer.getInstance().play_random_from_list(["panna_krutoi_1"])
+                touch_here = bh.ButtonHandler.getInstance().get_new_button("touch_here")
+                self.buttons.clear()
+                touch_here.x = int(0.6 * self.win_width)
+                touch_here.y = int(0.2 * self.win_height)
+                self.buttons.append(touch_here)
+            img = self.boss_1_act_2(img)
+        elif self.scene_act == 3:
+            if len(self.buttons) == 0:
+                self.scene_act += 1
+                ap.AudioPlayer.getInstance().play_random_from_list(["grisha_2"])
+                self.special_buttons.append(bh.ButtonHandler
+                                    .getInstance().get_new_button("grisha_boss_1_2"))
+                self.buttons.append(bh.ButtonHandler
+                                    .getInstance().get_new_button("kich_boss_1_2"))
+                text = ["Grisha has started transformation!",
+                        "His is chasing KICH to make him trap",
+                        "Push KICH away from Grisha"]
+                self.draw_corner_text(img, text)
+        elif self.scene_act == 4:
+            img = self.boss_1_act_3(img)
+
+        elif self.scene_act == 5:
+            if len(self.buttons) == 0:
+                ap.AudioPlayer.getInstance().play_random_from_list(["grisha_3"])
+                self.scene_act += 1
+            text = ["Grisha is attracting Vlads", "to turn into supreme Shluha",
+                    "and get KICH!",
+                    "Last push, SHOOT!"]
+            self.draw_corner_text(img, text)
+        elif self.scene_act == 6:
+            grisha = bh.ButtonHandler.getInstance().get_new_button("grisha_boss_1_3")
+            grisha.x = self.win_width//2
+            self.special_buttons.append(grisha)
+
+            self.scene_act += 1
+        elif self.scene_act == 7:
+            img = self.boss_1_act_4(img)
+
+        return img
+
+    def boss_1_act_1(self, img):
+        self.hp = int(1.2 * self.max_hp)
+        grisha = bh.ButtonHandler.getInstance().get_new_button("grisha_1")
+        self.special_buttons.append(grisha)
+        vlad = bh.ButtonHandler.getInstance().get_new_button("panna_guard")
+        vlad.x = grisha.x + grisha.width
+        vlad.y = grisha.y
+        self.special_buttons.append(deepcopy(vlad))
+        vlad.x = grisha.x
+        vlad.y = grisha.y - int(grisha.height * 0.7)
+        self.special_buttons.append(deepcopy(vlad))
+        vlad.x = grisha.x + grisha.width
+        vlad.y = grisha.y - int(grisha.height * 0.7)
+        self.special_buttons.append(deepcopy(vlad))
+
+        touch_here = bh.ButtonHandler.getInstance().get_new_button("touch_here")
+        touch_here.x = int(0.6 * self.win_width)
+        touch_here.y = int(0.3 * self.win_height)
+        self.buttons.append(touch_here)
+
+    def boss_1_act_2(self, img):
+        # if random.randint(0, 6) <= 1:
+        #     bullet = bh.ButtonHandler.getInstance()\
+        #         .spawn_behind_scene( "blue_circle_bullet", 1,
+        #                              "left", (self.win_width, self.win_height))[0]
+        #     bullet.y = random.randint(0, int(self.win_height * 0.45))
+        #     self.buttons.append(bullet)
+        chasing_speed = 2
+        for hand in self.hand_buttons:
+            if hand.id == "fist_hand" and random.randint(0, 7) <= 1:
+                bullet = bh.ButtonHandler \
+                    .getInstance().get_new_button("yellow_finger_bullet")
+                bullet.x = hand.x - int(hand.width * 1.1)
+                bullet.y = hand.y - hand.height // 2
+                self.buttons.append(bullet)
+            elif hand.id == "palm_index_f" and random.randint(0, 7) <= 1:
+                bullet = bh.ButtonHandler \
+                    .getInstance().get_new_button("blue_finger_bullet")
+                bullet.y = hand.y - int(hand.height * 0.8)
+                bullet.x = hand.x
+                self.buttons.append(bullet)
+            for b in self.buttons:
+                if b.id == "grisha_panna_bullet":
+                    if b.x > hand.x:
+                        b.x_speed -= chasing_speed
+                    if b.x < hand.x:
+                        b.x_speed += chasing_speed
+                    if b.y > hand.y:
+                        b.y_speed -= chasing_speed
+                    if b.y < hand.y:
+                        b.y_speed += chasing_speed
+        if self.hp <= 0:
+            self.defeat()
+            return img
+
+        for s in self.special_buttons:
+            if s.id == "panna_guard":
+                if random.randint(0, 80) <= 1:
+                    ap.AudioPlayer.getInstance()\
+                        .play_random_from_list(["panna_ne_popadaui_1"])
+                if s.is_destroyed:
+                    ap.AudioPlayer.getInstance().play_random_from_list(["panna_tvar_1"])
+            if random.randint(0, 31) <= 1:
+                bullet = bh.ButtonHandler \
+                    .getInstance().get_new_button("grisha_panna_bullet")
+                bullet.y = s.y
+                bullet.x = s.x
+                self.buttons.append(bullet)
+
+        text = ["Shoot at them!",
+                "Palm - shoot blue bullets",
+                "Fist - shoot yellow bullets"]
+        self.draw_corner_text(img, text)
+
+        return img
+
+    def boss_1_act_3(self, img):
+        text = ["Grisha has started transformation!",
+                "His is chasing KICH to make him trap",
+                "Push KICH away from Grisha"]
+        self.draw_corner_text(img, text)
+        chasing_speed = 1
+        for k in self.buttons:
+            if k.id == "kich_boss_1_2":
+                for g in self.special_buttons:
+                    if g.id == "grisha_boss_1_2":
+                        if g.x > k.x:
+                            g.x_speed -= chasing_speed
+                        if g.x < k.x:
+                            g.x_speed += chasing_speed
+                        if g.y > k.y:
+                            g.y_speed -= chasing_speed
+                        if g.y < k.y:
+                            g.y_speed += chasing_speed
+                if k.is_destroyed:
+                    self.hp -= 1
+                    spawn_area = (int(self.win_width * 0.1), int(self.win_height * 0.1),
+                                  int(self.win_width * 0.9), int(self.win_height * 0.9))
+                    self.buttons.extend(bh.ButtonHandler.getInstance().
+                                        spawn_random_from_list_random_place(["kich_boss_1_2"],
+                                                                            1, spawn_area))
+
+                    ap.AudioPlayer.getInstance().play_random_from_list(["grisha_catch_2"])
+
+        if self.hp <= 0:
+            self.defeat()
+            return img
+        if len(self.special_buttons) == 0:
+            self.scene_act += 1
+            self.buttons.clear()
+            self.special_buttons.clear()
+            self.hp = self.max_hp
+            ap.AudioPlayer.getInstance().play_random_from_list(["grisha_fail_2"])
+            touch_here = bh.ButtonHandler.getInstance().get_new_button("touch_here")
+            touch_here.x = int(0.6 * self.win_width)
+            touch_here.y = int(0.8 * self.win_height)
+            self.buttons.append(touch_here)
+
+        return img
+
+    def boss_1_act_4(self, img):
+        if random.randint(0, 12) <= 1:
+            direction = random.randint(0, 3)
+            panna = bh.ButtonHandler.getInstance()\
+                .get_new_button("panna_3")
+            panna.x = self.win_width // 2
+            panna.y = self.win_height + panna.height
+            if direction == 0:
+                panna.x = -int(0.1*self.win_width)
+                panna.y = self.win_height // 2
+            elif direction == 1:
+                panna.x = int(1.1*self.win_width)
+                panna.y = self.win_height // 2
+            self.buttons.append(panna)
+        chasing_speed = 3
+        for k in self.special_buttons:
+            if k.id == "grisha_boss_1_3":
+                for g in self.buttons:
+                    if g.id == "panna_3":
+                        if g.x > k.x:
+                            g.x_speed -= chasing_speed
+                        if g.x < k.x:
+                            g.x_speed += chasing_speed
+                        if g.y > k.y:
+                            g.y_speed -= chasing_speed
+                        if g.y < k.y:
+                            g.y_speed += chasing_speed
+        if random.randint(0, 22) <= 1:
+            bullet = bh.ButtonHandler \
+                .getInstance().get_new_button("grisha_panna_bullet")
+            bullet.y = int(0.1*self.win_height)
+            bullet.x = self.win_width//2
+            self.buttons.append(bullet)
+        for hand in self.hand_buttons:
+            if random.randint(0, 7) <= 1:
+                bullet = bh.ButtonHandler \
+                    .getInstance().get_new_button("boss_3_finger_bullet")
+                bullet.x = hand.x
+                bullet.y = hand.y - hand.height // 2
+                self.buttons.append(bullet)
+            for b in self.buttons:
+                if b.id == "grisha_panna_bullet":
+                    if b.x > hand.x:
+                        b.x_speed -= chasing_speed
+                    if b.x < hand.x:
+                        b.x_speed += chasing_speed
+                    if b.y > hand.y:
+                        b.y_speed -= chasing_speed
+                    if b.y < hand.y:
+                        b.y_speed += chasing_speed
+
+        if self.hp <= 0:
+            self.defeat()
+            return img
+
+        if len(self.special_buttons) == 0:
+            self.restart_scene_parameters()
+            self.game_status = "victory"
+            ap.AudioPlayer.getInstance().play_random_from_list(["grisha_fail_3"])
+
+        text = ["Grisha has started transformation!",
+                "His is chasing KICH to make him trap",
+                "Push KICH away from Grisha"]
+        self.draw_corner_text(img, text)
+
+        return img
+
+
+    def victory_screen(self, img):
+        img = tm.Texture.getInstance().get_resized_texture("victory", self.win_width,
+                                                            self.win_height)
+        text_list = ["You have made it!", "KICH is saved",
+                     "But be sure that eveil Grisha", "and other guys will return..."]
+        for i in range(0, len(text_list)):
+            cv2.putText(img, text_list[i],
+                        (int(self.win_width*0.5), 20 + 25*i),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.7, (255, 255, 255), 2)
+
+        return img
+
