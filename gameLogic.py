@@ -227,6 +227,8 @@ class Game:
                     self.hp -= 1
             if len(self.buttons) == 0:
                 self.next_scene()
+                ap.AudioPlayer.getInstance() \
+                    .play_random_from_list(["success_ridat"])
                 return img
 
             text_list = ["Keep at least one hand on the screen",
@@ -298,7 +300,8 @@ class Game:
         self.game_status = "loose"
         ap.AudioPlayer.getInstance()\
             .play_random_from_list(["end_driver_stop", "end_Kich_VseStop",
-                                    "end_panna_poslashe", "end_panna_ti"])
+                                    "end_panna_poslashe", "end_panna_ti",
+                                    "end_accurately", "end_kich_pidor"])
 
     def menu_scene(self, img):
         img = tm.Texture.getInstance().get_resized_texture("intro", self.win_width,
@@ -319,7 +322,7 @@ class Game:
                 #self.game_status = "game"
                 ap.AudioPlayer.getInstance()\
                     .play_random_from_list(["start_black_ass", "start_mexican",
-                                            "start_panna_budes"])
+                                            "start_panna_budes","next_level_nichtozhestvo"])
                 return img
 
         img = self.descritpion_list[self.current_scene+1](img)

@@ -14,7 +14,13 @@
       "grisha_catch_2": "sounds/Sus_NoImJessica.WAV",
       "grisha_fail_2": "sounds/Trap_TsokTsok.WAV",
       "grisha_3": "sounds/Trap_YaGrishaTrans.WAV",
-      "grisha_fail_3": "sounds/Trap_MdaNePret.WAV"
+      "grisha_fail_3": "sounds/Trap_MdaNePret.WAV",
+      "end_accurately": "sounds/end_accurately.wav",
+      "end_kich_pidor": "sounds/end_kich_pidor.wav",
+      "success_ridat": "sounds/success_ridat.wav",
+      "next_level_nichtozhestvo": "sounds/next_level_nichtozhestvo.wav"
+
+
 
 
 
