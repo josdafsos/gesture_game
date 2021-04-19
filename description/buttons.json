@@ -71,7 +71,8 @@
       "shape": "circle",
       "radius": 35,
       "attributes": {"destroyable_by": ["kich_head", "misha_chaser",
-        "red_ball_chaser", "grisha_panna_bullet", "panna_3", "grisha_boss_1_3"]}
+        "red_ball_chaser", "grisha_panna_bullet", "panna_3", "grisha_boss_1_3",
+      "kich_head_1"]}
     },
     {
       "id": "palm_index_f",
@@ -336,6 +337,19 @@
       "color": [20, 120, 50],
       "line_thickness": 1,
       "attributes": {"destroyable_by": ["grisha_boss_1_3"],
+                      "gravity": 0,
+                      "texture": "kich_head"
+      }
+    },
+    {
+      "id": "kich_head_1",
+      "x": 300,
+      "y": 300,
+      "shape": "circle",
+      "radius": 40,
+      "color": [20, 120, 50],
+      "line_thickness": 1,
+      "attributes": {"destroyable_by": ["palm_index_f", "palm_ring_f"],
                       "gravity": 0,
                       "texture": "kich_head"
       }

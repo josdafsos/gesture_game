@@ -161,7 +161,7 @@ class Game:
             if destroyable_buttons_cnt < int(0.3 * required_buttons):
                 spawn_area = (int(self.win_width * 0.1), int(self.win_height * 0.1),
                               int(self.win_width * 0.9), int(self.win_height * 0.9))
-                button_list = ["kich_naked_random", "kich_head"]
+                button_list = ["kich_naked_random", "kich_head_1"]
                 self.buttons.extend(bh.ButtonHandler.getInstance().
                                spawn_random_from_list_random_place(button_list,
                                                                    required_buttons, spawn_area))
@@ -327,7 +327,7 @@ class Game:
         return img
 
     def loose_scene(self, img):
-        if self.current_scene < 2:
+        if self.current_scene <= 2:
             img = tm.Texture.getInstance().get_resized_texture("game_over", self.win_width,
                                                                self.win_height)
 
@@ -595,6 +595,15 @@ class Game:
         chasing_speed = 3
         for k in self.special_buttons:
             if k.id == "grisha_boss_1_3":
+                if not(k.attributes.get("health") is None):
+                    grisha_hp = k.attributes.get("health")
+                    startPoint = (0, self.win_height-40)
+                    endPoint = (grisha_hp*8, self.win_height)
+                    img = cv2.rectangle(img, startPoint, endPoint, (80, 80, 230), -1)
+                    img = cv2.putText(img, "Gayrisha",
+                                      (grisha_hp*4, self.win_height-15),
+                                      cv2.FONT_HERSHEY_SIMPLEX,
+                                      0.7, (255, 120, 120), 2)
                 for g in self.buttons:
                     if g.id == "panna_3":
                         if g.x > k.x:
@@ -638,9 +647,8 @@ class Game:
             self.game_status = "victory"
             ap.AudioPlayer.getInstance().play_random_from_list(["grisha_fail_3"])
 
-        text = ["Grisha has started transformation!",
-                "His is chasing KICH to make him trap",
-                "Push KICH away from Grisha"]
+        text = ["Shoot!",
+                "SHOOT AT HIM"]
         self.draw_corner_text(img, text)
 
         return img
@@ -653,7 +661,7 @@ class Game:
                      "But be sure that eveil Grisha", "and other guys will return..."]
         for i in range(0, len(text_list)):
             cv2.putText(img, text_list[i],
-                        (int(self.win_width*0.5), 20 + 25*i),
+                        (int(self.win_width*0.45), 20 + 25*i),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         0.7, (255, 255, 255), 2)
 
